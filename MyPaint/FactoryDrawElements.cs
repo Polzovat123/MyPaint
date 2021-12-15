@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace MyPaint
 {
-    class FactoryDrawElements
+    abstract class MyFactory
+    {
+        public abstract CShape createObject(int code, int x, int y, int D);
+    }
+
+    class FactoryDrawElements : MyFactory
     {
         public FactoryDrawElements(){
         }
-        public CShape createObject(int code, int x, int y, int DS){
+        public override CShape createObject(int code, int x, int y, int DS){
             switch (code)
             {
                 case 1:

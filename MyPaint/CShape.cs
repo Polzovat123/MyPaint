@@ -11,62 +11,76 @@ namespace MyPaint
     abstract class CShape
     {
         public abstract void draw(PictureBox pb);
-        public abstract void clear(PictureBox pb);
         public abstract void chose();
         public abstract bool gFl();
         public abstract void changeColor(Color newColor);
         public abstract void reSize(int newSize);
         public abstract bool isHit(int _x, int _y);
-        public abstract void move(int dx, int dy, PictureBox obj);
+        public abstract void move(int dx, int dy);
+        public abstract bool inScreen(int dx, int dy, int height, int width);
+        public abstract bool inScreen(int newSize, int height, int width);
     }
-    class CCircle : CShape
+    class SShape : CShape
     {
-        private int x = 400;
-        private int y = 300;
-        private int D = 40;
-        private int olD = 40;
-        private bool f = true;
-        private Color body = Color.Blue;
-        private Color myColor = Color.Black;
+        protected int x = 400;
+        protected int y = 300;
+        protected int D = 40;
+        protected bool f = true;
+        protected Color body = Color.Blue;
+        protected Color myColor = Color.Black;
+
+        
+        public override bool isHit(int _x, int _y)
+        {
+            return true;
+        }
+        public override bool inScreen(int dx, int dy, int height, int width)
+        {
+            return true;
+        }
+        public override bool inScreen(int newSize, int height, int width)
+        {
+            throw new NotImplementedException();
+        }
+        public override void draw(PictureBox pb){}
+        //Simple part
+        public override void move(int dx, int dy)
+        {
+            x += dx;
+            y += dy;
+        }
+        public override bool gFl()
+        {
+            return f;
+        }
+        public override void chose(){
+            if (!f) { myColor = Color.Black; } else { myColor = Color.Red; }
+            f = !f;
+        }
+        public override void changeColor(Color newColor){
+            body = newColor;
+        }
+        public override void reSize(int newSize)
+        {
+            D = newSize;
+        }
+    }
+    //1 123 123 123
+    class CCircle : SShape
+    {
+        
         public CCircle(int _x, int _y, int _D)
         {
             x = _x;
             y = _y;
             D = _D;
         }
-
         public override void draw(PictureBox pb)
         {
             Graphics dr = pb.CreateGraphics();
             dr.DrawEllipse(new Pen(myColor), x, y, D, D);
             dr.FillEllipse(new SolidBrush(body), x, y, D, D);
             dr.Dispose();
-        }
-        public override void clear(PictureBox pb)
-        {
-            if (f) return;
-            Graphics dr = pb.CreateGraphics();
-            dr.DrawEllipse(new Pen(Color.White, 10), x, y, olD, olD);
-            dr.FillEllipse(new SolidBrush(Color.White), x, y, olD, olD);
-            dr.Dispose();
-        }
-        public override void changeColor(Color newColor)
-        {
-            body = newColor;
-        }
-        public override void reSize(int newSize)
-        {
-            olD = D;
-            D = newSize;
-        }
-        public override void chose()
-        {
-            if (!f) { myColor = Color.Black; } else { myColor = Color.Red; }
-            f = !f;
-        }
-        public override bool gFl()
-        {
-            return f;
         }
         public override bool isHit(int _x, int _y)
         {
@@ -78,63 +92,31 @@ namespace MyPaint
             }
             return false;
         }
-        public override void move(int dx, int dy, PictureBox obj)
+        public override bool inScreen(int dx, int dy, int height, int width)
         {
-            Graphics dr = obj.CreateGraphics();
-            dr.DrawEllipse(new Pen(Color.White, 10), x, y, D, D);
-            dr.FillEllipse(new SolidBrush(Color.White), x, y, D, D);
-            dr.Dispose();
-            x = dx;
-            y = dy;
+            if (x + dx < 0 || y + dy < 0) return false;
+            if (x + dx + D >height || y + dy + D > width) return false;
+            return true;
+        }
+        public override bool inScreen(int newSize, int height, int width)
+        {
+            if (x + newSize > height || y + newSize > width) return false;
+            return true;
         }
     }
-    class CSquare : CShape {
-        private int x = 400;
-        private int y = 300;
-        private int D = 40;
-        private int olD = 40;
-        private bool f = true;
-        private Color myColor = Color.Black;
-        private Color body = Color.Blue;
+    class CSquare : SShape {
         public CSquare(int _x, int _y, int _D)
         {
             x = _x;
             y = _y;
             D = _D;
         }
-
         public override void draw(PictureBox pb)
         {
             Graphics dr = pb.CreateGraphics();
             dr.DrawRectangle(new Pen(myColor), x, y, D, D);
             dr.FillRectangle(new SolidBrush(body), x, y, D, D);
             dr.Dispose();
-        }
-        public override void clear(PictureBox pb)
-        {
-            if (f) return;
-            Graphics dr = pb.CreateGraphics();
-            dr.DrawRectangle(new Pen(Color.White, 10), x, y, olD, olD);
-            dr.FillRectangle(new SolidBrush(Color.White), x, y, olD, olD);
-            dr.Dispose();
-        }
-        public override void changeColor(Color newColor)
-        {
-            body = newColor;
-        }
-        public override void reSize(int newSize)
-        {
-            olD = D;
-            D = newSize;
-        }
-        public override void chose()
-        {
-            if (!f) { myColor = Color.Black; } else { myColor = Color.Red; }
-            f = !f;
-        }
-        public override bool gFl()
-        {
-            return f;
         }
         public override bool isHit(int _x, int _y)
         {
@@ -146,29 +128,26 @@ namespace MyPaint
             }
             return false;
         }
-        public override void move(int dx, int dy, PictureBox obj)
+        public override bool inScreen(int dx, int dy, int height, int width)
         {
-            clear(obj);
-            x = dx;
-            y = dy;
+            if (x + dx < 0 || y + dy < 0) return false;
+            if (x + dx + D > height || y + dy + D > width) return false;
+            return true;
+        }
+        public override bool inScreen(int newSize, int height, int width)
+        {
+            if (x + newSize > height || y + newSize > width) return false;
+            return true;
         }
     }
-    class CTriangle : CShape
+    class CTriangle : SShape
     {
-        private int x = 400;
-        private int y = 300;
-        private int D = 40;
-        private int olD = 40;
-        private bool f = true;
-        private Color myColor = Color.Black;
-        private Color body = Color.Blue;
         public CTriangle(int _x, int _y, int _D)
         {
             D = _D;
             x = _x + D/2;
             y = _y;
         }
-
         public override void draw(PictureBox pb)
         {
             Graphics dr = pb.CreateGraphics();
@@ -185,41 +164,6 @@ namespace MyPaint
             dr.FillPolygon(new SolidBrush(body), triangle);
             dr.Dispose();
         }
-        public override void clear(PictureBox pb)
-        {
-            if (f) return;
-            Graphics dr = pb.CreateGraphics();
-            PointF[] triangle =
-            {
-                new Point(x, y),
-                new Point(x+olD/2, y+olD),
-                new Point(x+olD/2, y+olD),
-                new Point(x-olD/2, y+olD),
-                new Point(x-olD/2, y+olD),
-                new Point(x, y)
-            };
-            dr.DrawPolygon(new Pen(Color.White), triangle);
-            dr.FillPolygon(new SolidBrush(Color.White), triangle);
-            dr.Dispose();
-        }
-        public override void changeColor(Color newColor)
-        {
-            body = newColor;
-        }
-        public override void reSize(int newSize)
-        {
-            olD = D;
-            D = newSize;
-        }
-        public override void chose()
-        {
-            if (!f) { myColor = Color.Black; } else { myColor = Color.Red; }
-            f = !f;
-        }
-        public override bool gFl()
-        {
-            return f;
-        }
         public override bool isHit(int _x, int _y)
         {
             if ((x - _x) * (x - _x) + (y - _y) * (y - _y) <= D * D / 4)
@@ -228,14 +172,17 @@ namespace MyPaint
             }
             return false;
         }
-        public override void move(int dx, int dy, PictureBox obj){
-            Graphics dr = obj.CreateGraphics();
-            dr.DrawRectangle(new Pen(Color.White, 10), x-D/2, y, D, D);
-            SolidBrush fil = new SolidBrush(Color.White);
-            dr.FillRectangle(fil, x - D / 2, y, D, D);
-            dr.Dispose();
-            x = dx;
-            y = dy;
+        public override bool inScreen(int dx, int dy, int height, int width)
+        {
+            if (x + dx -D/2 < 0 || y + dy < 0) return false;
+            if (x + dx + D/2 > height || y + dy + D > width) return false;
+            return true;
+        }
+        public override bool inScreen(int newSize, int height, int width)
+        {
+            if (x + newSize < 0 || y + newSize < 0) return false;
+            if (x + newSize > height || y + newSize > width) return false;
+            return true;
         }
     }
 }

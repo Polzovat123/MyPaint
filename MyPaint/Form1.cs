@@ -36,21 +36,10 @@ namespace MyPaint
         private void pictureBox1_Click(object sender, EventArgs e) {
             MouseEventArgs a = (MouseEventArgs)e;
             if (dStShape != null && dStShape.s() > 0){
-                int i = 0;
                 for (dStShape.first(); dStShape.need(); dStShape.next()){
                     if(((CShape)dStShape.GET()).isHit(a.X, a.Y)){
                         ((CShape)dStShape.GET()).chose();
-                        break;
                     }
-                    i++;
-                }
-                int j = 0;  
-                for (dStShape.first(); dStShape.need(); dStShape.next()){
-                    if (i!=j && !((CShape)dStShape.GET()).gFl())
-                    {
-                        ((CShape)dStShape.GET()).chose();
-                    }
-                    j++;
                 }
             }
             Refresh();
@@ -70,13 +59,7 @@ namespace MyPaint
         }
         private void ClearMonitor()
         {
-            if (dStShape != null)
-            {
-                for (dStShape.first(); dStShape.need(); dStShape.next())
-                {
-                    ((CShape)dStShape.GET()).clear(pictureBox1);
-                }
-            }
+            k.FillRectangle(new SolidBrush(Color.White), 0, 0, 1300, 500);
         }
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -88,9 +71,10 @@ namespace MyPaint
             chDS = tBSize.Value;
             tbAns.Text = tBSize.Value.ToString();
             for(dStShape.first(); dStShape.need(); dStShape.next()){
-                Console.WriteLine(((CShape)dStShape.GET()).gFl());
-                if (!((CShape)dStShape.GET()).gFl()){
-                    ((CShape)dStShape.GET()).reSize(chDS);
+                SShape obj = ((SShape)(dStShape.GET()));
+                if (!obj.gFl() && obj.inScreen(0, 0, pictureBox1.Width, pictureBox1.Height))
+                {
+                    obj.reSize(chDS);
                 }
             }
             Console.WriteLine();
@@ -103,17 +87,32 @@ namespace MyPaint
             Refresh();
         }
         private bool wantMove = false;
-
+        private int ox = -1, oy = -1;
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             if (wantMove){
-                for(dStShape.first(); dStShape.need(); dStShape.next()){
-                    if (!((CShape)(dStShape.GET())).gFl()){
-                        ((CShape)(dStShape.GET())).move(e.X, e.Y, pictureBox1);
-                    }
+                if (ox == -1)
+                {
+                    ox = e.X;
+                    oy = e.Y;
                 }
-                ClearMonitor();
-                Refresh();
+                else
+                {
+                    for (dStShape.first(); dStShape.need(); dStShape.next()){
+                        SShape obj = ((SShape)(dStShape.GET()));
+                        if (!obj.gFl() && obj.inScreen(e.X - ox, e.Y - oy, pictureBox1.Width, pictureBox1.Height))
+                        {
+                            obj.move(e.X - ox, e.Y-oy);
+                        }
+                    }
+                    ClearMonitor();
+                    Refresh();
+                    ox = e.X; oy = e.Y;
+                }
+                
+            }
+            if (!wantMove){
+                ox = oy = -1;
             }
         }
 
@@ -129,7 +128,6 @@ namespace MyPaint
                     if (!((CShape)(dStShape.GET())).gFl()){
                         Color clr = Color.FromArgb(125, trbRed.Value, trbGreen.Value, trbBlue.Value);
                         ((CShape)(dStShape.GET())).changeColor(clr);
-                        break;
                     }
                 }
                 Refresh();
@@ -141,7 +139,6 @@ namespace MyPaint
                         ClearMonitor();
                         dStShape.del(now);
                         Refresh();
-                        break;
                     }
                     now++;
                 }
