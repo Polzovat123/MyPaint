@@ -24,6 +24,8 @@ namespace MyPaint
                     return new CSquare(x, y, DS);
                 case 3:
                     return new CTriangle(x, y, DS);
+                case 4:
+                    return new CGroup();
                 default:
                     return null;
             }
