@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
 
 namespace MyPaint
 {
@@ -38,10 +39,14 @@ namespace MyPaint
         }
         public override void draw(PictureBox pb)
         {
-            if(arr!=null&&arr.s()>0)
-                for (arr.first(); arr.need(); arr.next()){
+            Console.WriteLine(arr.s());
+            if (arr != null && arr.s() > 0){
+                Console.WriteLine("Me drawwing...");
+                for (arr.first(); arr.need(); arr.next())
+                {
                     ((CShape)arr.GET()).draw(pb);
                 }
+            }
         }
         public override void changeColor(Color newColor)
         {
@@ -110,6 +115,7 @@ namespace MyPaint
             return true;
         }
         public void Add(CShape obj){
+            Console.WriteLine("Add to me " + (arr.s()+1).ToString());
             if (obj.gFl()) obj.chose();
             arr.Add(obj);
         }
@@ -118,7 +124,19 @@ namespace MyPaint
             return new CGroup(arr);
         }
         public override DataStore Des() {
+            for (arr.first(); arr.need(); arr.next())
+                ((CShape)arr.GET()).chose();
             return arr;
+        }
+        public override void save(string path){
+            File.AppendAllText(path, "{\n");
+            for (arr.first(); arr.need(); arr.next()) {
+                ((CShape)arr.GET()).save(path);
+            }
+            File.AppendAllText(path, "}\n");
+        }
+        public override void load(string encode){
+            
         }
     }
     class SShape : CShape
@@ -140,7 +158,7 @@ namespace MyPaint
         }
         public override bool inScreen(int newSize, int height, int width)
         {
-            throw new NotImplementedException();
+            return true;
         }
         public override void draw(PictureBox pb){}
         //Simple part
@@ -167,7 +185,12 @@ namespace MyPaint
         public override void save(string path)
         {
         }
-        public override void load(string path){}
+        public override void load(string encode){
+            string[] value = encode.Split(new char[] { ' ' });
+            x = Int32.Parse(value[0]);
+            y = Int32.Parse(value[1]);
+            D = Int32.Parse(value[2]);
+        }
         public override DataStore Des() {
             DataStore dataStore = new DataStore();
             dataStore.Add(copy());
@@ -185,6 +208,7 @@ namespace MyPaint
             y = _y;
             D = _D;
         }
+        public CCircle() { }
         public override void draw(PictureBox pb)
         {
             Graphics dr = pb.CreateGraphics();
@@ -224,8 +248,11 @@ namespace MyPaint
             Console.WriteLine(dataStore.s());
             return dataStore;
         }
-        public CCircle(String encode) { 
-            //example we got ""
+        public override void save(String path) {
+            string body =
+                x.ToString() + " " +  y.ToString()+" "+D.ToString();
+            string text = "1 " + body + "\n";
+            File.AppendAllText(path, text);
         }
     }
     class CSquare : SShape {
@@ -235,6 +262,7 @@ namespace MyPaint
             y = _y;
             D = _D;
         }
+        public CSquare() { }
         public override void draw(PictureBox pb)
         {
             Graphics dr = pb.CreateGraphics();
@@ -267,6 +295,13 @@ namespace MyPaint
         {
             return new CSquare(x, y, D);
         }
+        public override void save(String path)
+        {
+            string body =
+                x.ToString() + " " + y.ToString() + " " + D.ToString();
+            string text = "2 " + body + "\n";
+            File.AppendAllText(path, text);
+        }
     }
     class CTriangle : SShape
     {
@@ -276,6 +311,7 @@ namespace MyPaint
             x = _x + D/2;
             y = _y;
         }
+        public CTriangle() { }
         public override void draw(PictureBox pb)
         {
             Graphics dr = pb.CreateGraphics();
@@ -315,6 +351,13 @@ namespace MyPaint
         public override CShape copy()
         {
             return new CTriangle(x, y, D);
+        }
+        public override void save(String path)
+        {
+            string body =
+                x.ToString() + " " + y.ToString() + " " + D.ToString();
+            string text = "3 " + body + "\n";
+            File.AppendAllText(path, text);
         }
     }
 }

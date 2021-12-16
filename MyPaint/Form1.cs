@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace MyPaint
 {
@@ -122,15 +123,72 @@ namespace MyPaint
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            String path = "C:\\Users\\Admin\\Desktop\\save.txt";
+            File.WriteAllText(path, "");
             for (dStShape.first(); dStShape.need(); dStShape.next()) {
                 ((CShape)dStShape.GET()).save(path);
             }
+            tbAns.Text = "Picture saved.";
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-
+            String line;
+            try{
+                StreamReader sr = new StreamReader(path);
+                
+                line = sr.ReadLine();
+                Stack<CGroup> last = new Stack<CGroup>();
+                CShape elem = null;
+                while (line != null){
+                    CShape newFigure =  fabric.loadFile(line[0]-'0');
+                    if (line[0] != '{'&&line[0]!='}') newFigure.load(line.Substring(2));
+                    if (line[0] == '{') {
+                        last.Push((CGroup)newFigure);
+                        elem = (CGroup)newFigure;
+                        Console.WriteLine("Add new Group\n");
+                        line = sr.ReadLine();
+                        continue;
+                    }
+                    if (line[0] == '}') {
+                        if (last.Count() > 1){
+                            last.Pop();
+                            CGroup elem2 = last.Pop();
+                            elem2.Add(elem);
+                            last.Push(elem2);
+                            elem = elem2;
+                        }
+                        else {
+                            Console.WriteLine("Group already written.\n");
+                            last.Pop();
+                            dStShape.Add(elem);
+                            elem.draw(pictureBox1);
+                        }
+                        line = sr.ReadLine();
+                        continue;
+                    }
+                    if (last.Count() > 0){
+                        Console.WriteLine("We add new figure\n");
+                        //newFigure.draw(pictureBox1);
+                        ((CGroup)elem).Add(newFigure.copy());
+                    }
+                    if (last.Count()==0)
+                    {
+                        dStShape.Add(newFigure);
+                    }
+                    line = sr.ReadLine();
+                }
+                sr.Close();
+                Console.ReadLine();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+            finally
+            {
+                Refresh();
+            }
+            Console.WriteLine(dStShape.s());
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
