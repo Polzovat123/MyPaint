@@ -39,6 +39,8 @@ namespace MyPaint
             this.trbRed = new System.Windows.Forms.TrackBar();
             this.trbGreen = new System.Windows.Forms.TrackBar();
             this.trbBlue = new System.Windows.Forms.TrackBar();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.btnLoad = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tBSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbRed)).BeginInit();
@@ -137,12 +139,34 @@ namespace MyPaint
             this.trbBlue.Size = new System.Drawing.Size(104, 56);
             this.trbBlue.TabIndex = 12;
             // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(694, 8);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(62, 36);
+            this.btnSave.TabIndex = 13;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnLoad
+            // 
+            this.btnLoad.Location = new System.Drawing.Point(762, 8);
+            this.btnLoad.Name = "btnLoad";
+            this.btnLoad.Size = new System.Drawing.Size(64, 36);
+            this.btnLoad.TabIndex = 14;
+            this.btnLoad.Text = "Load";
+            this.btnLoad.UseVisualStyleBackColor = true;
+            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Menu;
             this.ClientSize = new System.Drawing.Size(1429, 592);
+            this.Controls.Add(this.btnLoad);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.trbBlue);
             this.Controls.Add(this.trbGreen);
             this.Controls.Add(this.trbRed);
@@ -180,6 +204,8 @@ namespace MyPaint
         private System.Windows.Forms.TrackBar trbRed;
         private System.Windows.Forms.TrackBar trbGreen;
         private System.Windows.Forms.TrackBar trbBlue;
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnLoad;
     }
 }
 
