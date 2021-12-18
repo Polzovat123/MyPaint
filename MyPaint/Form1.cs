@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace MyPaint
 {
@@ -147,14 +148,26 @@ namespace MyPaint
                 }
             }
         }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            File.WriteAllText("C:\\Users\\Admin\\Desktop\\output.txt", "");//dStShape.s().ToString()
+            for (dStShape.first(); dStShape.need(); dStShape.next()){
+                ((CShape)dStShape.GET()).save("C:\\Users\\Admin\\Desktop\\output.txt");
+            }
+        }
+
+        private void btnRead_Click(object sender, EventArgs e)
+        {
+            dStShape.clear();
+            ClearMonitor();
+            Refresh();
+            foreach (string line in System.IO.File.ReadLines(@"C:\\Users\\Admin\\Desktop\\output.txt"))
+            {
+                dStShape.Add(fabric.loadObject(line[0] - '0', line));
+            }
+            Console.WriteLine(dStShape.s());
+            Refresh();
+        }
     }
 }
-
-/*
-if (codeFactory == 1){
-                codeFactory = -1;
-            }
-            else {
-                codeFactory = 1;
-            }
- */

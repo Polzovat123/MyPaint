@@ -23,5 +23,18 @@ namespace MyPaint
                     return null;
             }
         }
+        public CShape loadObject(int code, String infObject){
+            switch (code)
+            {
+                case 1:
+                    return new CCircle(infObject);
+                case 2:
+                    return new CSquare(infObject);
+                case 3:
+                    return new CTriangle(infObject);
+                default:
+                    return null;
+            }
+        }
     }
 }

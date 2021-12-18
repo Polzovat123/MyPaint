@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
 
 namespace MyPaint
 {
+
     abstract class CShape
     {
         public abstract void draw(PictureBox pb);
@@ -18,6 +20,64 @@ namespace MyPaint
         public abstract void reSize(int newSize);
         public abstract bool isHit(int _x, int _y);
         public abstract void move(int dx, int dy, PictureBox obj);
+        public abstract void save(String path);
+    }
+    class CGroup: CShape{
+        protected DataStore arr;
+
+        public CGroup(DataStore d) {
+            arr = d;
+        }
+        public void ADD(CShape obj){
+            arr.Add(obj);
+        }
+        public override void draw(PictureBox pb)
+        {
+            for (arr.first(); arr.need(); arr.next()) {
+                ((CShape)arr.GET()).draw(pb);
+            }
+        }
+        public override void clear(PictureBox pb)
+        {
+            for (arr.first(); arr.need(); arr.next()){
+                ((CShape)arr.GET()).clear(pb);
+            }
+        }
+        public override void chose()
+        {
+            for (arr.first(); arr.need(); arr.next()){
+                ((CShape)arr.GET()).chose();
+            }
+        }
+        public override void reSize(int newSize)
+        {
+            for (arr.first(); arr.need(); arr.next())
+            {
+                ((CShape)arr.GET()).reSize(newSize);
+            }
+        }
+        public override bool isHit(int _x, int _y){
+            return true;
+        }
+        public override bool gFl()
+        {
+            return true;
+        }
+        public override void move(int dx, int dy, PictureBox obj){
+            for (arr.first(); arr.need(); arr.next()){
+                ((CShape)arr.GET()).move(dx, dy, obj);
+            }
+        }
+        public override void changeColor(Color newColor)
+        {
+            for (arr.first(); arr.need(); arr.next()) {
+                ((CShape)arr.GET()).changeColor(newColor);
+            }
+        }
+        public override void save(String Path)
+        {
+            
+        }
     }
     class CCircle : CShape
     {
@@ -34,7 +94,11 @@ namespace MyPaint
             y = _y;
             D = _D;
         }
-
+        public CCircle(String str){
+            x = 100;
+            y = 200;
+            D = 40;
+        }
         public override void draw(PictureBox pb)
         {
             Graphics dr = pb.CreateGraphics();
@@ -87,6 +151,13 @@ namespace MyPaint
             x = dx;
             y = dy;
         }
+        public override void save(String path){
+            string body =
+                "x = " + x.ToString() + " " +
+                "y = " + y.ToString();
+            string text = "1-Circle " + body + "\n";
+            File.AppendAllText(path, text);
+        }
     }
     class CSquare : CShape {
         private int x = 400;
@@ -102,7 +173,7 @@ namespace MyPaint
             y = _y;
             D = _D;
         }
-
+        public CSquare(String str) { }
         public override void draw(PictureBox pb)
         {
             Graphics dr = pb.CreateGraphics();
@@ -152,6 +223,14 @@ namespace MyPaint
             x = dx;
             y = dy;
         }
+        public override void save(String path)
+        {
+            string body =
+                "x = " + x.ToString() + " " +
+                "y = " + y.ToString();
+            string text = "2-Square " + body + "\n";
+            File.AppendAllText(path, text);
+        }
     }
     class CTriangle : CShape
     {
@@ -168,7 +247,7 @@ namespace MyPaint
             x = _x + D/2;
             y = _y;
         }
-
+        public CTriangle(String str) { }
         public override void draw(PictureBox pb)
         {
             Graphics dr = pb.CreateGraphics();
@@ -236,6 +315,14 @@ namespace MyPaint
             dr.Dispose();
             x = dx;
             y = dy;
+        }
+        public override void save(String path)
+        {
+            string body = 
+                "x = " + x.ToString()+" "+
+                "y = " + y.ToString();
+            string text = "3-Triangle "  + body +  "\n";
+            File.AppendAllText(path, text);
         }
     }
 }
