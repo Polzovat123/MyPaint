@@ -198,8 +198,7 @@ namespace MyPaint
             return dataStore;
         }
         public override CShape copy() { return null; }
-    }
-    
+    }    
     class CCircle : SShape
     {
         public CCircle(int _x, int _y, int _D)

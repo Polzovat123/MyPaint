@@ -41,6 +41,7 @@ namespace MyPaint
             this.trbBlue = new System.Windows.Forms.TrackBar();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
+            this.tVStore = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tBSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trbRed)).BeginInit();
@@ -54,7 +55,7 @@ namespace MyPaint
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pictureBox1.Location = new System.Drawing.Point(0, 60);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1429, 532);
+            this.pictureBox1.Size = new System.Drawing.Size(1441, 532);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
@@ -159,12 +160,21 @@ namespace MyPaint
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
+            // tVStore
+            // 
+            this.tVStore.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.tVStore.Location = new System.Drawing.Point(1192, 60);
+            this.tVStore.Name = "tVStore";
+            this.tVStore.Size = new System.Drawing.Size(237, 532);
+            this.tVStore.TabIndex = 15;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Menu;
-            this.ClientSize = new System.Drawing.Size(1429, 592);
+            this.ClientSize = new System.Drawing.Size(1441, 592);
+            this.Controls.Add(this.tVStore);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.trbBlue);
@@ -206,6 +216,7 @@ namespace MyPaint
         private System.Windows.Forms.TrackBar trbBlue;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnLoad;
+        private System.Windows.Forms.TreeView tVStore;
     }
 }
 
